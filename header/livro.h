@@ -43,27 +43,52 @@ void inserir_no(FILE* f, Livro l);
 
 // Funcao para remover no na arvore
 // Pre-condicao: nenhuma
-// Pos-condicao: remove no encontrado na arvore
-void remover_no(FILE* f, int codigo);
+// Pos-condicao: nenhuma
+void remover_no(FILE* f);
+
+// Funcao auxiliar para remover elemento
+// Pre-condicao: nenhuma
+// Pos-condicao: remove no da arvore e retorna novo valor
+int remover(FILE* f, int pos, int codigo, cabecalho* cab);
 
 // Funcao para encontrar minimo
 // Pre-condicao: nenhuma
 // Pos-condicao: retorna a posicao do menor valor
 int minimo(FILE* f, int pos);
 
-int remover(FILE* f, int pos, int codigo, cabecalho* cab);
-
 // Funcao de busca de no
 // Pre-condicao: nenhuma
-// Pos-condicao: retorna 0 se nao encontrado, valor do no se encontrado
+// Pos-condicao: retorna -1 se nao encontrado, e a posicao do no se encontrado
 int busca(FILE* f, int codigo, int pos);
 
+// Funcao para cadastrar livro
+// Pre-condicao: nenhuma
+// Pos-condicao: cadastra e insere novo livro
 void cadastrar_livro(FILE* f);
 
-void listar_livros(FILE* f);
-
+// Funcao para imprimir
+// Pre-condicao: nenhuma
+// Pos-condicao: imprime livro de acordo com codigo do livro
 void imprimir_codigo(FILE* f);
 
+// Funcao para calcular total de livros
+// Pre-condicao: nenhuma
+// Pos-condicao: imprime total de livros cadastrados
+void total_livros(FILE* f);
+
+// Funcao para imprimir em preOrder
+// Pre-condicao: arquivo inicializado
+// Pos-condicao: nenhuma
+void listar_livros(FILE* f);
+
+// Funcao para imprimir
+// Pre-condicao: nenhuma
+// Pos-condicao: imprime por niveis
+void imprimir_niveis(FILE* f);
+
+// Funcao para alocar strings
+// Pre-condicao: nenhuma
+// Pos-condicao: nenhuma
 void alocar_string(Livro* livro);
 
 #endif // _LIVRO_H_INCLUDED

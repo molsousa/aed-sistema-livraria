@@ -1,5 +1,6 @@
 #ifndef _FILA_H_INCLUDED
 #define _FILA_H_INCLUDED
+#include "livro.h"
 
 // Definicao de tipo para fila
 typedef struct fila* Fila;
@@ -22,11 +23,11 @@ void* liberar_fila(Fila f);
 // Funcao para enfilerar elemento
 // Pre-condicao: fila criada
 // Pos-condicao: nenhuma
-void enqueue(Fila f, int codigo);
+void enqueue(Fila f, no* x);
 
 // Funcao para defilerar elemento
 // Pre-condicao: fila criada
 // Pos-condicao: retorna elemento defilerado
-int dequeue(Fila f);
+no* dequeue(Fila f);
 
 #endif // _FILA_H_INCLUDED

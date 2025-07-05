@@ -4,7 +4,7 @@
 
 // Estrutura para lista encadeada
 struct lista{
-    int codigo;
+    no* x;
     struct lista* prox;
 };
 
@@ -47,10 +47,10 @@ void* liberar_fila(Fila f)
 // Funcao para enfilerar elemento
 // Pre-condicao: fila criada
 // Pos-condicao: nenhuma
-void enqueue(Fila f, int codigo)
+void enqueue(Fila f, no* x)
 {
     struct lista* novo = malloc(sizeof(struct lista));
-    novo->codigo = codigo;
+    novo->x = x;
     novo->prox = NULL;
 
     if(fila_vazia(f))
@@ -64,13 +64,12 @@ void enqueue(Fila f, int codigo)
 // Funcao para defilerar elemento
 // Pre-condicao: fila criada
 // Pos-condicao: retorna elemento defilerado
-int dequeue(Fila f)
+no* dequeue(Fila f)
 {
-    int x;
+    no* x = f->primeiro->x;
     struct lista* aux = f->primeiro;
 
     f->primeiro = f->primeiro->prox;
-    x = aux->codigo;
     free(aux);
 
     return x;

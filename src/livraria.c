@@ -10,10 +10,13 @@
 void criar_arvore(FILE* f)
 {
     cabecalho* cab = (cabecalho*) malloc(sizeof(cabecalho));
+    if(!cab)
+        erro();
 
     cab->pos_raiz = -1;
     cab->pos_topo = 0;
     cab->pos_livre = -1;
+    cab->total_livros = 0;
 
     escrever_cabecalho(f, cab);
     free(cab);
@@ -34,6 +37,8 @@ void escrever_cabecalho(FILE* f, cabecalho* cab)
 cabecalho* ler_cabecalho(FILE* f)
 {
     cabecalho* cab = (cabecalho*) malloc(sizeof(cabecalho));
+    if(!cab)
+        erro();
 
     fseek(f, 0, SEEK_SET);
     fread(cab, sizeof(cabecalho), 1, f);
@@ -41,6 +46,9 @@ cabecalho* ler_cabecalho(FILE* f)
     return cab;
 }
 
+// Funcao para menu do usuario
+// Pre-condicao: nenhuma
+// Pos-condicao: nenhuma
 void menu()
 {
     FILE* arq_bin = fopen("livraria.bin", "w+b");
@@ -65,15 +73,19 @@ void menu()
             listar_livros(arq_bin);
             break;
         case 4:
+            total_livros(arq_bin);
             break;
         case 5:
+            remover_no(arq_bin);
             break;
         case 6:
             carregar_arquivo(arq_bin);
             break;
         case 7:
+            imprimir_registros_livres(arq_bin);
             break;
         case 8:
+            imprimir_niveis(arq_bin);
             break;
         case 0:
             printf("Obrigado!!\n");
@@ -87,15 +99,53 @@ void menu()
     fclose(arq_bin);
 }
 
+// Funcao para opcoes do usuario
+// Pre-condicao: nenhuma
+// Pos-condicao: nenhuma
 void opcoes()
 {
-    printf("1 - Cadastrar livro\n");
-    printf("2 - Imprimir dados do livro\n");
-    printf("3 - Listar todos os livros\n");
-    printf("4 - Calcular total\n");
-    printf("5 - Remover livro\n");
-    printf("6 - Carregar arquivo\n");
-    printf("7 - Imprimir registros livres\n");
-    printf("8 - Imprimir por niveis\n");
-    printf("0 - Sair\n");
+    printf("=============LIVRARIA=============\n");
+    printf("||1 - Cadastrar livro           ||\n");
+    printf("||2 - Imprimir dados do livro   ||\n");
+    printf("||3 - Listar todos os livros    ||\n");
+    printf("||4 - Calcular total            ||\n");
+    printf("||5 - Remover livro             ||\n");
+    printf("||6 - Carregar arquivo          ||\n");
+    printf("||7 - Imprimir registros livres ||\n");
+    printf("||8 - Imprimir por niveis       ||\n");
+    printf("||0 - Sair                      ||\n");
+    printf("==================================\n");
+}
+
+// Funcao para imprimir registros livres
+// Pre-condicao: nenhuma
+// Pos-condicao: nenhuma
+void imprimir_registros_livres(FILE* f)
+{
+    cabecalho* cab = ler_cabecalho(f);
+    int pos = cab->pos_livre;
+
+    if(pos == -1)
+        printf("Nao ha registros livres\n");
+
+    else{
+        printf("Registros livres: ");
+
+        while(pos != -1){
+            printf("Posicao: %d\n", pos);
+            no* x = ler_no(f, pos);
+            pos = x->dir;
+            free(x);
+        }
+    }
+    free(cab);
+}
+
+// Funcao para alertar erro
+// Pre-condicao: erro encontrado
+// Pos-condicao: fecha execucao
+void erro()
+{
+    printf("Erro ao alocar memoria!!\n");
+    exit(1);
 }

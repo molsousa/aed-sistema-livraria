@@ -5,6 +5,9 @@
 #include "../header/livro.h"
 #include "../header/carregar_arquivo.h"
 
+// Funcao para carregar arquivo de texto
+// Pre-condicao: nenhuma
+// Pos-condicao: carrega arvore binaria com registros
 void carregar_arquivo(FILE* arq_bin)
 {
     char input[TAM/4];
@@ -14,7 +17,10 @@ void carregar_arquivo(FILE* arq_bin)
 
     printf("Digite o nome do arquivo: ");
     scanf("%[^\n]%*c", input);
+
     arq_texto = fopen(input, "r");
+    if(!arq_texto)
+        erro();
 
     while(fgets(leitura, TAM, arq_texto) != NULL){
         register int i = 0;
@@ -60,6 +66,9 @@ void carregar_arquivo(FILE* arq_bin)
     fclose(arq_texto);
 }
 
+// Funcao para cortar espacos
+// Pre-condicao: nenhuma
+// Pos-condicao: retira os espacos de uma string
 void trim(char* str)
 {
     int inicio = 0;
@@ -77,6 +86,9 @@ void trim(char* str)
     }
 }
 
+// Funcao para retirar espacos
+// Pre-condicao: nenhuma
+// Pos-condicao: retorna posicao em memoria sem espacos
 char* retirar_espaco(char* str)
 {
     while(isspace(*str))
@@ -85,6 +97,9 @@ char* retirar_espaco(char* str)
     return str;
 }
 
+// Funcao para cortar ponto-virgula
+// Pre-condicao: nenhuma
+// Pos-condicao: retorna uma string com corte no ponto-virgula
 char* cortar_ponto(char* str)
 {
     register int i = 0;
