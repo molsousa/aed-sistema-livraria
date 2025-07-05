@@ -40,13 +40,13 @@ no* ler_no(FILE* f, int pos)
 // Funcao para inserir no na arvore
 // Pre-condicao: nenhuma
 // Pos-condicao: insere novo no na arvore
-void inserir_no(FILE* f, Livro l)
+void inserir_no(FILE* f, Livro livro)
 {
     cabecalho* cab = ler_cabecalho(f);
     no novo;
     int pos;
 
-    novo.l = l;
+    novo.livro = livro;
     novo.esq = novo.dir = -1;
 
     if(cab->pos_livre != -1){
@@ -66,7 +66,7 @@ void inserir_no(FILE* f, Livro l)
         no* pai = ler_no(f, pos_pai);
 
         while(1){
-            if(novo.l.codigo < pai->l.codigo){
+            if(novo.livro.codigo < pai->livro.codigo){
                 if(pai->esq == -1){
                     pai->esq = pos;
                     escrever_no(f, pai, pos_pai);
@@ -75,7 +75,7 @@ void inserir_no(FILE* f, Livro l)
                 }
                 pos_pai = pai->esq;
             }
-            else if(novo.l.codigo > pai->l.codigo){
+            else if(novo.livro.codigo > pai->livro.codigo){
                 if(pai->dir == -1){
                     pai->dir = pos;
                     escrever_no(f, pai, pos_pai);
@@ -123,38 +123,43 @@ int remover(FILE* f, int pos, int codigo, cabecalho* cab)
 
     no* x = ler_no(f, pos);
 
-    if(codigo < x->l.codigo)
+    if(codigo < x->livro.codigo){
         x->esq = remover(f, x->esq, codigo, cab);
+        escrever_no(f, x, pos);
+    }
 
-    else if(codigo > x->l.codigo)
+    else if(codigo > x->livro.codigo){
         x->dir = remover(f, x->dir, codigo, cab);
+        escrever_no(f, x, pos);
+    }
 
     else{
-        int temp;
+        if(x->esq == -1 && x->dir == -1){
+            if(pos == cab->pos_raiz)
+                cab->pos_raiz = -1;
 
-        if(x->esq == -1){
-            temp = x->dir;
-            x->dir = cab->pos_livre;
+            x->esq = x->dir = cab->pos_livre;
             cab->pos_livre = pos;
+            escrever_cabecalho(f, cab);
             escrever_no(f, x, pos);
             free(x);
-            return temp;
-        }
-        else if(x->dir == -1){
-            temp = x->esq;
-            x->esq = cab->pos_livre;
-            cab->pos_livre = pos;
-            escrever_no(f, x, pos);
-            free(x);
-            return temp;
+            return -1;
         }
         else{
-            int menor_pos = minimo(f, x->dir);
-            no* menor = ler_no(f, menor_pos);
-            x->l = menor->l;
-            x->dir = remover(f, x->dir, menor->l.codigo, cab);
-            escrever_no(f, x, pos);
-            free(menor);
+            if(x->esq == -1){
+                int pos_min = minimo(f, x->dir);
+                no* min = ler_no(f, pos_min);
+                x->livro = min->livro;
+                x->dir = remover(f, x->dir, min->livro.codigo, cab);
+                free(min);
+            }
+            else{
+                int pos_max = maximo(f, x->esq);
+                no* max = ler_no(f, pos_max);
+                x->livro = max->livro;
+                x->esq = remover(f, x->esq, max->livro.codigo, cab);
+                free(max);
+            }
         }
     }
     escrever_no(f, x, pos);
@@ -179,6 +184,22 @@ int minimo(FILE* f, int pos)
     return pos;
 }
 
+// Funcao para encontrar maximo
+// Pre-condicao: nenhuma
+// Pos-condicao: retorna a posicao do maior valor
+int maximo(FILE* f, int pos)
+{
+    no* x = ler_no(f, pos);
+
+    while(x->dir != -1){
+        pos = x->dir;
+        free(x);
+        x = ler_no(f, pos);
+    }
+    free(x);
+    return pos;
+}
+
 // Funcao de busca de no
 // Pre-condicao: nenhuma
 // Pos-condicao: retorna -1 se nao encontrado, e a posicao do no se encontrado
@@ -188,13 +209,13 @@ int busca(FILE* f, int codigo, int pos)
         return -1;
 
     no* x = ler_no(f, pos);
-    if(x->l.codigo < codigo){
+    if(x->livro.codigo < codigo){
         pos = x->dir;
         free(x);
         return busca(f, codigo, pos);
     }
 
-    else if(x->l.codigo > codigo){
+    else if(x->livro.codigo > codigo){
         pos = x->esq;
         free(x);
         return busca(f, codigo, pos);
@@ -211,37 +232,38 @@ int busca(FILE* f, int codigo, int pos)
 // Pos-condicao: cadastra e insere novo livro
 void cadastrar_livro(FILE* f)
 {
-    Livro l;
-    alocar_string(&l);
+    Livro livro;
+    alocar_string(&livro);
     char valor[10];
 
     printf("Digite o codigo: ");
-    scanf("%d%*c", &l.codigo);
+    scanf("%d%*c", &livro.codigo);
 
     printf("Digite o titulo: ");
-    scanf("%[^\n]%*c", l.titulo);
+    scanf("%[^\n]%*c", livro.titulo);
 
     printf("Digite o autor: ");
-    scanf("%[^\n]%*c", l.autor);
+    scanf("%[^\n]%*c", livro.autor);
 
     printf("Digite a editora: ");
-    scanf("%[^\n]%*c", l.editora);
+    scanf("%[^\n]%*c", livro.editora);
 
     printf("Digite a edicao: ");
-    scanf("%d", &l.edicao);
+    scanf("%d", &livro.edicao);
 
     printf("Digite o ano: ");
-    scanf("%d", &l.ano);
+    scanf("%d", &livro.ano);
 
     printf("Digite o numero de exemplares: ");
-    scanf("%d%*c", &l.exemplares);
+    scanf("%d%*c", &livro.exemplares);
 
     printf("Digite o preco do livro: ");
     scanf("%[^\n]%*c", valor);
+    sscanf(valor, "%d,%d", &livro.preco[0], &livro.preco[1]);
 
-    sscanf(valor, "%d,%d", &l.preco[0], &l.preco[1]);
+    inserir_no(f, livro);
 
-    inserir_no(f, l);
+    system("cls");
 }
 
 // Funcao para imprimir
@@ -262,9 +284,10 @@ void imprimir_codigo(FILE* f)
 
     else{
         no* x = ler_no(f,codigo);
-        Livro livro = x->l;
+        Livro livro = x->livro;
 
-        printf("=================================\n");
+        printf("|______________LIVRO______________|\n");
+        printf("|=================================|\n");
         printf("|Codigo: %d\n", livro.codigo);
         printf("|Titulo: %s\n", livro.titulo);
         printf("|Autor: %s\n", livro.autor);
@@ -272,11 +295,13 @@ void imprimir_codigo(FILE* f)
         printf("|Edicao: %d\n", livro.edicao);
         printf("|Ano: %d\n", livro.ano);
         printf("|Exemplares: %d\n", livro.exemplares);
-        printf("|Preco: R$ %d,%d\n", livro.preco[0], livro.preco[1]);
-        printf("=================================\n");
+        printf("|Preco: R$ %d,%02d\n", livro.preco[0], livro.preco[1]);
+        printf("|=================================|\n");
 
         free(x);
     }
+    system("pause");
+    system("cls");
 }
 
 // Funcao para calcular total de livros
@@ -298,8 +323,16 @@ void total_livros(FILE* f)
 void listar_livros(FILE* f)
 {
     cabecalho* cab = ler_cabecalho(f);
+    if(cab->pos_raiz == -1){
+        printf("Sem livros adicionados!!\n");
+        return;
+    }
+
+    printf("|__________LISTA_DE_LIVROS__________|\n");
     imprimir_inOrder(f, cab->pos_raiz);
     free(cab);
+    system("pause");
+    system("cls");
 }
 
 // Funcao auxiliar para imprimir em preOrder
@@ -312,8 +345,8 @@ static void imprimir_inOrder(FILE* f, int pos)
 
     no* x = ler_no(f, pos);
 
-    imprimir_inOrder(f, x->esq);
     impressao(x);
+    imprimir_inOrder(f, x->esq);
     imprimir_inOrder(f, x->dir);
 
     free(x);
@@ -324,12 +357,12 @@ static void imprimir_inOrder(FILE* f, int pos)
 // Pos-condicao: imprime especificas informacoes do livro
 static void impressao(no* x)
 {
-    printf("=====================================\n");
-    printf("|Codigo: %d\n", x->l.codigo);
-    printf("|Titulo: %s\n", x->l.titulo);
-    printf("|Autor: %s\n", x->l.autor);
-    printf("|Exemplares: %d\n", x->l.exemplares);
-    printf("_____________________________________\n");
+    printf("|===================================|\n");
+    printf("|Codigo: %d\n", x->livro.codigo);
+    printf("|Titulo: %s\n", x->livro.titulo);
+    printf("|Autor: %s\n", x->livro.autor);
+    printf("|Exemplares: %d\n", x->livro.exemplares);
+    printf("|===================================|\n");
 }
 
 // Funcao para imprimir
@@ -340,6 +373,9 @@ void imprimir_niveis(FILE* f)
     cabecalho* cab = ler_cabecalho(f);
 
     if(cab->pos_raiz == -1){
+        printf("Sem livros cadastrados!!\n");
+        system("pause");
+        system("cls");
         free(cab);
         return;
     }
@@ -359,7 +395,7 @@ void imprimir_niveis(FILE* f)
                 enqueue(deq, NULL);
         }
         else{
-            printf("%d ", atual->l.codigo);
+            printf("%d ", atual->livro.codigo);
 
             if(atual->esq != -1){
                 int pos = atual->esq;
@@ -376,6 +412,8 @@ void imprimir_niveis(FILE* f)
     }
     deq = liberar_fila(deq);
     free(cab);
+    system("pause");
+    system("cls");
 }
 
 // Funcao para alocar strings

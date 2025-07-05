@@ -92,6 +92,8 @@ void menu()
             break;
         default:
             printf("Opcao invalida, tente novamente\n");
+            system("pause");
+            system("cls");
         }
 
     }while(opcao != 0);
@@ -129,16 +131,19 @@ void imprimir_registros_livres(FILE* f)
         printf("Nao ha registros livres\n");
 
     else{
-        printf("Registros livres: ");
+        printf("Registros livres:\n");
 
         while(pos != -1){
             printf("Posicao: %d\n", pos);
             no* x = ler_no(f, pos);
-            pos = x->dir;
+            pos = x->esq;
             free(x);
         }
+        pos = cab->pos_livre;
     }
     free(cab);
+    system("pause");
+    system("cls");
 }
 
 // Funcao para alertar erro

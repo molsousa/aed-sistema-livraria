@@ -20,8 +20,8 @@ typedef struct{
 }Livro;
 
 // Estrutura para no
-typedef struct _no{
-    Livro l;
+typedef struct{
+    Livro livro;
     int esq;
     int dir;
 }no;
@@ -55,6 +55,11 @@ int remover(FILE* f, int pos, int codigo, cabecalho* cab);
 // Pre-condicao: nenhuma
 // Pos-condicao: retorna a posicao do menor valor
 int minimo(FILE* f, int pos);
+
+// Funcao para encontrar maximo
+// Pre-condicao: nenhuma
+// Pos-condicao: retorna a posicao do maior valor
+int maximo(FILE* f, int pos);
 
 // Funcao de busca de no
 // Pre-condicao: nenhuma
