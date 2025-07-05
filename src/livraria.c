@@ -7,7 +7,7 @@
 // Funcao para inicializar arvore binaria
 // Pre-condicao: arquivo inicializado
 // Pos-condicao: inicializa o cabecalho
-void criar_arvore(FILE* f)
+void criar_arvore(FILE* arq_bin)
 {
     cabecalho* cab = (cabecalho*) malloc(sizeof(cabecalho));
     if(!cab)
@@ -18,30 +18,30 @@ void criar_arvore(FILE* f)
     cab->pos_livre = -1;
     cab->total_livros = 0;
 
-    escrever_cabecalho(f, cab);
+    escrever_cabecalho(arq_bin, cab);
     free(cab);
 }
 
 // Funcao para escrever cabecalho
 // Pre-condicao: arvore criada
 // Pos-condicao: escreve alteracoes no cabecalho
-void escrever_cabecalho(FILE* f, cabecalho* cab)
+void escrever_cabecalho(FILE* arq_bin, cabecalho* cab)
 {
-    fseek(f, 0, SEEK_SET);
-    fwrite(cab, sizeof(cabecalho), 1, f);
+    fseek(arq_bin, 0, SEEK_SET);
+    fwrite(cab, sizeof(cabecalho), 1, arq_bin);
 }
 
 // Funcao para ler o cabecalho
 // Pre-condicao: arvore criada
 // Pos-condicao: retorna a condicao do cabecalho
-cabecalho* ler_cabecalho(FILE* f)
+cabecalho* ler_cabecalho(FILE* arq_bin)
 {
     cabecalho* cab = (cabecalho*) malloc(sizeof(cabecalho));
     if(!cab)
         erro();
 
-    fseek(f, 0, SEEK_SET);
-    fread(cab, sizeof(cabecalho), 1, f);
+    fseek(arq_bin, 0, SEEK_SET);
+    fread(cab, sizeof(cabecalho), 1, arq_bin);
 
     return cab;
 }
@@ -122,9 +122,9 @@ void opcoes()
 // Funcao para imprimir registros livres
 // Pre-condicao: nenhuma
 // Pos-condicao: nenhuma
-void imprimir_registros_livres(FILE* f)
+void imprimir_registros_livres(FILE* arq_bin)
 {
-    cabecalho* cab = ler_cabecalho(f);
+    cabecalho* cab = ler_cabecalho(arq_bin);
     int pos = cab->pos_livre;
 
     if(pos == -1)
@@ -135,7 +135,7 @@ void imprimir_registros_livres(FILE* f)
 
         while(pos != -1){
             printf("Posicao: %d\n", pos);
-            no* x = ler_no(f, pos);
+            no* x = ler_no(arq_bin, pos);
             pos = x->esq;
             free(x);
         }

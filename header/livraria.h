@@ -14,17 +14,17 @@ typedef struct{
 // Funcao para inicializar arvore binaria
 // Pre-condicao: arquivo inicializado
 // Pos-condicao: inicializa o cabecalho
-void criar_arvore(FILE* f);
+void criar_arvore(FILE* arq_bin);
 
 // Funcao para escrever cabecalho
 // Pre-condicao: arvore criada
 // Pos-condicao: escreve alteracoes no cabecalho
-void escrever_cabecalho(FILE* f, cabecalho* cab);
+void escrever_cabecalho(FILE* arq_bin, cabecalho* cab);
 
 // Funcao para ler o cabecalho
 // Pre-condicao: arvore criada
 // Pos-condicao: retorna a condicao do cabecalho
-cabecalho* ler_cabecalho(FILE* f);
+cabecalho* ler_cabecalho(FILE* arq_bin);
 
 // Funcao para menu do usuario
 // Pre-condicao: nenhuma
@@ -39,7 +39,7 @@ void opcoes();
 // Funcao para imprimir registros livres
 // Pre-condicao: nenhuma
 // Pos-condicao: nenhuma
-void imprimir_registros_livres(FILE* f);
+void imprimir_registros_livres(FILE* arq_bin);
 
 // Funcao para alertar erro
 // Pre-condicao: erro encontrado

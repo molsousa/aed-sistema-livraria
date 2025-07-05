@@ -19,7 +19,7 @@ struct fila{
 // Pos-condicao: cria nova fila
 Fila criar_fila()
 {
-    Fila f = malloc(sizeof(struct fila));
+    Fila f = (Fila) malloc(sizeof(struct fila));
     f->primeiro = f->ultimo = NULL;
 
     return f;
@@ -49,7 +49,7 @@ void* liberar_fila(Fila f)
 // Pos-condicao: nenhuma
 void enqueue(Fila f, no* x)
 {
-    struct lista* novo = malloc(sizeof(struct lista));
+    struct lista* novo = (struct lista*) malloc(sizeof(struct lista));
     novo->x = x;
     novo->prox = NULL;
 
