@@ -1,5 +1,6 @@
 #ifndef _LIVRO_H_INCLUDED
 #define _LIVRO_H_INCLUDED
+#include "livraria.h"
 
 #include <stdio.h>
 #define TITULO 151
@@ -9,20 +10,20 @@
 // Estrutura para livro
 typedef struct{
     int codigo;
-    char titulo[TITULO];
-    char autor[AUTOR];
-    char editora[EDITORA];
+    char* titulo;
+    char* autor;
+    char* editora;
     int edicao;
     int ano;
     int exemplares;
-    float preco;
+    int preco[2];
 }Livro;
 
 // Estrutura para no
 typedef struct _no{
     Livro l;
-    struct _no* esq;
-    struct _no* dir;
+    int esq;
+    int dir;
 }no;
 
 // Funcao para escrever no
@@ -45,14 +46,24 @@ void inserir_no(FILE* f, Livro l);
 // Pos-condicao: remove no encontrado na arvore
 void remover_no(FILE* f, int codigo);
 
-// Funcao para encontrar maximo
+// Funcao para encontrar minimo
 // Pre-condicao: nenhuma
-// Pos-condicao: retorna a posicao do maior valor
-int maximo(FILE* f, int pos);
+// Pos-condicao: retorna a posicao do menor valor
+int minimo(FILE* f, int pos);
+
+int remover(FILE* f, int pos, int codigo, cabecalho* cab);
 
 // Funcao de busca de no
 // Pre-condicao: nenhuma
 // Pos-condicao: retorna 0 se nao encontrado, valor do no se encontrado
-int busca(FILE* f, int codigo);
+int busca(FILE* f, int codigo, int pos);
+
+void cadastrar_livro(FILE* f);
+
+void listar_livros(FILE* f);
+
+void imprimir_codigo(FILE* f);
+
+void alocar_string(Livro* livro);
 
 #endif // _LIVRO_H_INCLUDED

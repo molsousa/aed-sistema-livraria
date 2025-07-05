@@ -25,4 +25,8 @@ void escrever_cabecalho(FILE* f, cabecalho* cab);
 // Pos-condicao: retorna a condicao do cabecalho
 cabecalho* ler_cabecalho(FILE* f);
 
+void menu();
+
+void opcoes();
+
 #endif // _LIVRARIA_H_INCLUDED
