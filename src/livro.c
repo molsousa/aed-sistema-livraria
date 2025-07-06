@@ -49,7 +49,7 @@ void inserir_no(FILE* arq_bin, Livro livro)
     novo.livro = livro;
     novo.esq = novo.dir = -1;
 
-    if(cab->pos_livre != -1){
+    if(cab->pos_livre != -1){ // reaproveita no livre
         pos = cab->pos_livre;
         no* livre = ler_no(arq_bin, pos);
         cab->pos_livre = livre->esq;
@@ -65,7 +65,7 @@ void inserir_no(FILE* arq_bin, Livro livro)
         int pos_pai = cab->pos_raiz;
         no* pai = ler_no(arq_bin, pos_pai);
 
-        while(1){
+        while(1){ // evita recursao
             if(novo.livro.codigo < pai->livro.codigo){
                 if(pai->esq == -1){
                     pai->esq = pos;
@@ -106,6 +106,9 @@ void remover_no(FILE* arq_bin)
     printf("Insira o codigo do livro que deseja remover: ");
     scanf("%d%*c", &codigo);
 
+    if((busca(arq_bin, codigo, cab->pos_raiz)) == -1)
+        printf("Livro nao existe\n");
+
     cab->pos_raiz = remover(arq_bin, cab->pos_raiz, codigo, cab);
 
     cab->total_livros--;
@@ -134,7 +137,7 @@ int remover(FILE* arq_bin, int pos, int codigo, cabecalho* cab)
     }
 
     else{
-        if(x->esq == -1 && x->dir == -1){
+        if(x->esq == -1 && x->dir == -1){ // no folha (caso base)
             if(pos == cab->pos_raiz)
                 cab->pos_raiz = -1;
 
@@ -146,14 +149,14 @@ int remover(FILE* arq_bin, int pos, int codigo, cabecalho* cab)
             return -1;
         }
         else{
-            if(x->esq == -1){
+            if(x->esq == -1){ // no da esquerda eh nulo
                 int pos_min = minimo(arq_bin, x->dir);
                 no* min = ler_no(arq_bin, pos_min);
                 x->livro = min->livro;
                 x->dir = remover(arq_bin, x->dir, min->livro.codigo, cab);
                 free(min);
             }
-            else{
+            else{ // no da direita eh nulo ou dois filhos
                 int pos_max = maximo(arq_bin, x->esq);
                 no* max = ler_no(arq_bin, pos_max);
                 x->livro = max->livro;
@@ -345,8 +348,8 @@ static void imprimir_inOrder(FILE* arq_bin, int pos)
 
     no* x = ler_no(arq_bin, pos);
 
-    impressao(x);
     imprimir_inOrder(arq_bin, x->esq);
+    impressao(x);
     imprimir_inOrder(arq_bin, x->dir);
 
     free(x);
@@ -384,6 +387,7 @@ void imprimir_niveis(FILE* arq_bin)
     no* x = ler_no(arq_bin, cab->pos_raiz);
     enqueue(deq, x);
     enqueue(deq, NULL);
+    printf("|IMPRESSAO-POR-NIVEIS|\n");
 
     while(!fila_vazia(deq)){
         no* atual = dequeue(deq);

@@ -95,7 +95,6 @@ void menu()
             system("pause");
             system("cls");
         }
-
     }while(opcao != 0);
 
     fclose(arq_bin);
@@ -128,13 +127,13 @@ void imprimir_registros_livres(FILE* arq_bin)
     int pos = cab->pos_livre;
 
     if(pos == -1)
-        printf("Nao ha registros livres\n");
+        printf("Nao ha registros livres!!\n");
 
     else{
-        printf("Registros livres:\n");
+        printf("|____Registros_livres____|\n");
 
         while(pos != -1){
-            printf("Posicao: %d\n", pos);
+            printf("||Posicao: %d\n", pos);
             no* x = ler_no(arq_bin, pos);
             pos = x->esq;
             free(x);
