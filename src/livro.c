@@ -385,9 +385,14 @@ void imprimir_niveis(FILE* arq_bin)
 
     Fila deq = criar_fila();
     no* x = ler_no(arq_bin, cab->pos_raiz);
+	no* aux[1000];
+	int i = 0;
+
     enqueue(deq, x);
     enqueue(deq, NULL);
-    printf("|IMPRESSAO-POR-NIVEIS|\n");
+	aux[i++] = x;
+
+    printf("IMPRESSAO-POR-NIVEIS\n");
 
     while(!fila_vazia(deq)){
         no* atual = dequeue(deq);
@@ -402,18 +407,22 @@ void imprimir_niveis(FILE* arq_bin)
             printf("%d ", atual->livro.codigo);
 
             if(atual->esq != -1){
-                int pos = atual->esq;
-                no* aux = ler_no(arq_bin, pos);
-                enqueue(deq, aux);
+                x = ler_no(arq_bin, atual->esq);
+                enqueue(deq, x);
+				aux[i++] = x;
             }
 
             if(atual->dir != -1){
-                int pos = atual->dir;
-                no* aux = ler_no(arq_bin, pos);
-                enqueue(deq, aux);
+                x = ler_no(arq_bin, atual->dir);
+                enqueue(deq, x);
+				aux[i++] = x;
             }
         }
     }
+	i--;
+	while(i >= 0)
+		free(aux[i--]);
+
     deq = liberar_fila(deq);
     free(cab);
     system("pause");
@@ -425,9 +434,9 @@ void imprimir_niveis(FILE* arq_bin)
 // Pos-condicao: nenhuma
 void alocar_string(Livro* livro)
 {
-    livro->titulo = (char*) malloc(151 * sizeof(char));
-    livro->autor = (char*) malloc(201 * sizeof(char));
-    livro->editora = (char*) malloc(51 * sizeof(char));
+    livro->titulo = (char*) calloc(151, sizeof(char));
+    livro->autor = (char*) calloc(201, sizeof(char));
+    livro->editora = (char*) calloc(51, sizeof(char));
 
     if(!livro->titulo || !livro->autor || !livro->editora)
         erro();
